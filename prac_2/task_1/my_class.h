@@ -1,61 +1,119 @@
-#include "my_class.h"
-#include <stdio.h>
-int main() {
-    if (fstream file("test.txt"); file.is_open()) {
-        int choise;
-        bool flag = true;
-        cout << "0 - Main menu\n" << "1 - Output the contents of a text file\n" << "2 - Adding a new entry to the end of the file\n" <<
-            "3 - Adding a new entry to the end of the file\n" << "4 - Number of numbers in the file\n" <<
-                "5 - Task from the option\n" << "6 - EXIT\n" << "Your choice: ";
-        cin >> choise;
-        while (flag) {
-            system("cls");
-            switch (choise) {
-                case 0: {
-                    cout << "0 - Main menu\n" << "1 - Output the contents of a text file\n" << "2 - Adding a new entry to the end of the file\n" <<
-                        "3 - Adding a new entry to the end of the file\n" << "4 - Number of numbers in the file\n" <<
-                            "5 - Task from the option\n" << "6 - EXIT\n" << "Your choice: "; break;
+//
+// Created by Kirill on 10/25/2024.
+//
+#ifndef MY_CLASS_H
+#define MY_CLASS_H
+
+#include <iostream>
+#include <fstream>
+#include <ranges>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+//проверка char == int
+inline bool chek(const char ch) {
+    if (ch == '1' || ch == '2' || ch == '3' || ch == '4' || ch == '5'
+        || ch == '6' || ch == '7' || ch == '8' || ch == '9' || ch == '0') return true;
+    return false;
+}
+
+//возврат содержимого текстового файла
+inline string fileOutput(fstream &file) {
+    string readline;
+    for (string line; getline(file, line);) { readline += line + "\n"; }
+    return readline;
+}
+
+//добавление новой записи в конец файла
+inline string fileRecord(fstream &file) {
+    file.clear();
+    file.seekp(0, ios::end);
+    string line, readline;
+    cout << "Enter a string of numbers, to complete enter (exit):\n";
+    while (true) {
+        getline(cin, line);
+        if (line == "exit") {
+            break;
+        }
+        readline += line + "\n";
+    }
+    file << readline;
+    return "The recording was successful\n";
+}
+
+
+//прочитать значение числа, указав его порядковый номер в файле, и вернуть его значение при успешном выполнении и код
+//завершения если номер превышает количество чисел в файле
+inline int fileReturn(fstream &file, const int &nubmer) {
+    int number1 = 0;
+    string e = "0", line;
+    while (getline(file, line)) {
+        int q = 0, index = -1;
+        for (const char i : line) {
+            index++;
+            if (chek(i)) q++;
+            else q = 0;
+            if (q == 1) number1++;
+            if (number1 == nubmer) {
+                for (int j = index; j < line.size(); j++) {
+                    if (chek(line[j])) e += line[j];
+                    else break;
                 }
-                case 1: {
-                    // вывод содержимого текстового файла на экран;
-                    cout << "Output the contents of a text file\n---\n" << fileOutput(file) << "\n---\n";
-                    break;
-                }
-                case 2: {
-                    //добавление новой записи в конец файла;
-                    cout << "Adding a new entry to the end of the file\n---\n" << fileRecord(file) << "\n---\n";
-                    break;
-                }
-                case 3: {
-                    //вывод числа по порядковому номеру;
-                    int index;
-                    cout << "Output of a number by ordinal number\n---\n";
-                    cout << "Enter index: "; cin >> index;
-                    cout << fileReturn(file, index) << "\n---\n";
-                    break;
-                }
-                case 4: {
-                    //количество числе в файле;
-                    cout << "Number of numbers in the file\n---\nNumber of numbers in the file: " <<
-                        fileNumber(file) << "\n---\n";
-                    break;
-                }
-                case 5: {
-                    //задание из варианта;
-                    cout << "Task from the option\n---\n"; task_27(file); cout << "\n---\n";
-                    break;
-                }
-                default: {
-                    cout << "EXIT";
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                cout << "Your choice: "; cin >> choise;
+                return stoi(e);
             }
         }
     }
-    else cout << "ERROR";
-    return 0;
+    cout << "error";
+    return -1;
 }
+
+//определить количество чисел в файле
+inline int fileNumber(fstream &file) {
+    int number = 0;
+    string line;
+    while (getline(file, line)) {
+        int q = 0;
+        for (const char i : line) {
+            if (chek(i)) q++;
+            else q = 0;
+            if (q == 1) number++;
+        }
+    }
+    return number;
+}
+
+//задание из индивидуального варианта
+inline void task_27(fstream &file) {
+    string line;
+    vector <int> even, odd;
+    while (getline(file, line)) {
+        int q = 0, index = -1;
+        for (const char i : line) {
+            index++; string e = "0";
+            if (chek(i)) q++;
+            else q = 0;
+            if (q == 1) {
+                for (int j = index; j < line.size(); j++) {
+                    if (chek(line[j])) e += line[j];
+                    else break;
+                }
+                if (int count = stoi(e); count % 2 == 0) {
+                    even.push_back(count);
+                }
+                else odd.push_back(count);
+            }
+        }
+    }
+    ofstream file1; file.open("task_27.txt"); file1.close();
+    if (fstream file_task("task_27.txt", ios::in | ios::out | ios::app); file_task.is_open()) {
+        file_task << even.size() << ' '; cout << even.size() << ' ';
+        for (const int i : even) { file_task << i << ' '; cout << i << ' '; }
+        file_task << '\n' << odd.size() << ' '; cout << '\n' << odd.size() << ' ';
+        for (const int i : odd) { file_task << i << ' '; cout << i << ' '; }
+        file_task.close();
+    }
+    else cout << "error";
+}
+#endif //MY_CLASS_H
