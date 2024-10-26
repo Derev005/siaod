@@ -1,20 +1,29 @@
 #include "my_class.h"
 #include <stdio.h>
+inline void mainMenu() {
+    cout << "0 - Main menu\n" << "1 - Output the contents of a text file\n" << "2 - Adding a new entry to the end of the file\n" <<
+        "3 - Output of a number by ordinal number\n" << "4 - Number of numbers in the file\n" <<
+            "5 - Task from the option\n" << "6 - EXIT\n" << "Your choice: ";
+}
+inline void brbrbr(fstream &file) {
+    file.clear();
+    file.seekg(0);
+}
 int main() {
-    if (fstream file("test.txt"); file.is_open()) {
+    fstream file; string fileName; cout << "Enter file name: "; cin >> fileName;
+    ofstream file1; file.open(fileName + ".txt"); file1.close();
+    if (file.open(fileName + ".txt", ios::in | ios::out | ios::app); file.is_open()) {
+        brbrbr(file);
         int choise;
         bool flag = true;
-        cout << "0 - Main menu\n" << "1 - Output the contents of a text file\n" << "2 - Adding a new entry to the end of the file\n" <<
-            "3 - Adding a new entry to the end of the file\n" << "4 - Number of numbers in the file\n" <<
-                "5 - Task from the option\n" << "6 - EXIT\n" << "Your choice: ";
+        mainMenu();
         cin >> choise;
         while (flag) {
             system("cls");
             switch (choise) {
                 case 0: {
-                    cout << "0 - Main menu\n" << "1 - Output the contents of a text file\n" << "2 - Adding a new entry to the end of the file\n" <<
-                        "3 - Adding a new entry to the end of the file\n" << "4 - Number of numbers in the file\n" <<
-                            "5 - Task from the option\n" << "6 - EXIT\n" << "Your choice: "; break;
+                    mainMenu();
+                    break;
                 }
                 case 1: {
                     // вывод содержимого текстового файла на экран;
@@ -54,6 +63,7 @@ int main() {
             if (flag) {
                 cout << "Your choice: "; cin >> choise;
             }
+            brbrbr(file);
         }
     }
     else cout << "ERROR";
